@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addNewPost } from './postsSlice'
 
+import { selectAllUsers } from '../users/usersSlice'
+
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -9,8 +11,7 @@ export const AddPostForm = () => {
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
   const dispatch = useDispatch()
-
-  const users = useSelector((state) => state.users)
+  const users = useSelector(selectAllUsers)
 
   const onTitleChanged = (e) => setTitle(e.target.value)
   const onContentChanged = (e) => setContent(e.target.value)
@@ -26,6 +27,8 @@ export const AddPostForm = () => {
         // .unwrap() allows us to handle the sucess or failure of the promise inside the
         // component using try/catch logic ('unwraps' err status making it available here).
         // otherwise, status is typically defined inside extraReducer in the slice file using builder methods
+        // this allows us to have a default behavior of status accross the app, but also allows us to
+        // override the default behavior in specific components using custom status handling logic
         await dispatch(addNewPost({ title, content, user: userId })).unwrap()
         setTitle('')
         setContent('')
